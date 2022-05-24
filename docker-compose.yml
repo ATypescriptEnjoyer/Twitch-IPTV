@@ -1,0 +1,14 @@
+version: '3.7'
+services:
+    twitch-iptv:
+      container_name: twitch-iptv
+      build:
+        context: .
+        dockerfile: Dockerfile
+      restart: always
+      environment:
+        - TZ=Europe/London
+      
+networks:
+  default:
+    name: docker_default

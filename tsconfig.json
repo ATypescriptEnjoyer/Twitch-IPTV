@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "lib": [
+      "es6",
+      "DOM"
+    ],
+    "sourceMap": true,
+    "outDir": "build",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "paths": {
+      "assets/*": [
+        "./assets/*"
+      ]
+    },
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
