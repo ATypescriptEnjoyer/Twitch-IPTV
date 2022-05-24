@@ -65,21 +65,24 @@ const Main = async (): Promise<void> => {
       const info = streamersInformation.find((info) => info.login === streamer.twitchName);
       const stream = streamersStreamInformation.find((streamInfo) => streamInfo.user_login === streamer.twitchName);
       const id = streamer.twitchName;
-      if (stream) {
-        root.ele("channel", { id })
-          .ele("display-name", { lang: "en", }).txt(streamer.friendlyName).up()
-          .ele("icon", { src: info.profile_image_url }).up()
-          .up();
+      root.ele("channel", { id })
+      .ele("display-name", { lang: "en", }).txt(streamer.friendlyName).up()
+      .ele("icon", { src: info.profile_image_url }).up()
+      .up();
 
-        const streamStartDate = moment(stream.started_at).format("YYYYMMDDHHmmss +0100");
-        const streamEndDate = moment().add(2, "hour").format("YYYYMMDDHHmmss +0100");
-        root.ele("programme", { channel: id, start: streamStartDate, stop: streamEndDate })
-          .ele("title", { lang: "en" }).txt(stream.title).up()
-          .ele("desc", { lang: "en" }).txt(info.description).up()
-          .ele("date").txt(moment().format("YYYYMMDD")).up()
-          .ele("category", { lang: "en" }).txt(stream.game_name).up()
-          .up()
+      const streamStartDate = stream ? moment(stream.started_at) : moment();
+      let streamEndDate = streamStartDate.add(12, "hours");
+      if(streamEndDate.isBefore(moment())) {
+        streamEndDate = moment().add(12, "hours");
       }
+      const streamTitle = stream ? stream.title : `${streamer} is offline.`;
+      const category = stream ? stream.game_name : "Offline";
+      root.ele("programme", { channel: id, start: streamStartDate, stop: streamEndDate })
+      .ele("title", { lang: "en" }).txt(streamTitle).up()
+      .ele("desc", { lang: "en" }).txt(info.description).up()
+      .ele("date").txt(moment().format("YYYYMMDD")).up()
+      .ele("category", { lang: "en" }).txt(category).up()
+      .up()
     });
     const xml = root.end({ prettyPrint: true });
     res.set('Content-Type', 'text/xml');
@@ -95,7 +98,7 @@ const Main = async (): Promise<void> => {
       stream.pipe(res);
     }
     else {
-      res.status(503); //streamer offline but guide hasn't refreshed.
+      res.status(503).send(); //streamer offline but guide hasn't refreshed.
     }
   });
 }
