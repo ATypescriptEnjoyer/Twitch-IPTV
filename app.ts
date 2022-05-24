@@ -94,7 +94,11 @@ const Main = async (): Promise<void> => {
     const streamersStreamInformation = await TwitchApi.GetStreamInformation([streamer]);
     if (streamersStreamInformation.length > 0) {
       const dlp = new YTDlpWrap("./yt-dlp");
-      const stream = dlp.execStream([`https://twitch.tv/${streamer}`, '-f', 'best[ext=mp4]']);
+      const stream = dlp.execStream([
+        `https://twitch.tv/${streamer}`,
+        '-f',
+        'best[ext=mp4]'
+      ]);
       stream.pipe(res);
     }
     else {
