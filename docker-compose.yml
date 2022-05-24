@@ -5,10 +5,11 @@ services:
       build:
         context: .
         dockerfile: Dockerfile
+      volumes:
+        - "./streamers.json:/app/streamers.json"
       restart: always
       environment:
         - TZ=Europe/London
-      
 networks:
   default:
     name: docker_default
