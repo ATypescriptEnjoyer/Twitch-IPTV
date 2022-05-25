@@ -70,7 +70,7 @@ const Main = async (): Promise<void> => {
       .ele("icon", { src: info.profile_image_url }).up()
       .up();
 
-      const streamStartDate = stream ? moment(stream.started_at) : moment();
+      const streamStartDate = stream ? moment(stream.started_at) : moment().subtract(1, "hour");
       let streamEndDate = moment(streamStartDate).add(12, "hours");
       if(streamEndDate.isBefore(moment())) {
         streamEndDate = moment().add(12, "hours");
