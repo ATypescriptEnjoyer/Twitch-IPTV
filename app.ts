@@ -71,13 +71,14 @@ const Main = async (): Promise<void> => {
       .up();
 
       const streamStartDate = stream ? moment(stream.started_at) : moment();
-      let streamEndDate = streamStartDate.add(12, "hours");
+      let streamEndDate = moment(streamStartDate).add(12, "hours");
       if(streamEndDate.isBefore(moment())) {
         streamEndDate = moment().add(12, "hours");
       }
-      const streamTitle = stream ? stream.title : `${streamer} is offline.`;
+      const format = "YYYYMMDDHHmmss +0100";
+      const streamTitle = stream ? stream.title : `${streamer.friendlyName} is offline.`;
       const category = stream ? stream.game_name : "Offline";
-      root.ele("programme", { channel: id, start: streamStartDate, stop: streamEndDate })
+      root.ele("programme", { channel: id, start: streamStartDate.format(format), stop: streamEndDate.format(format) })
       .ele("title", { lang: "en" }).txt(streamTitle).up()
       .ele("desc", { lang: "en" }).txt(info.description).up()
       .ele("date").txt(moment().format("YYYYMMDD")).up()
