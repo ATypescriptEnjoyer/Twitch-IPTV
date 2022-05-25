@@ -95,10 +95,12 @@ const Main = async (): Promise<void> => {
     const streamersStreamInformation = await TwitchApi.GetStreamInformation([streamer]);
     if (streamersStreamInformation.length > 0) {
       const dlp = new YTDlpWrap("./yt-dlp");
+      const resolution: "1080" | "720" = "1080"; //TODO: Add to config
       const stream = dlp.execStream([
         `https://twitch.tv/${streamer}`,
         '-f',
-        'best[ext=mp4]'
+        `best[ext=mp4][height=${resolution}]`,
+        '--no-hls-use-mpegts'
       ]);
       stream.pipe(res);
     }
