@@ -6,7 +6,7 @@ import { create } from "xmlbuilder2";
 import moment from "moment";
 import { randomUUID } from "crypto";
 
-const GetStreamersArray = (): {friendlyName: string, twitchName: string}[] => {
+const GetStreamersArray = (): { friendlyName: string, twitchName: string }[] => {
   return JSON.parse(fs.readFileSync("./streamers.json").toString());
 }
 
@@ -47,7 +47,7 @@ const Main = async (): Promise<void> => {
   app.get("/lineup_status.json", (_, res) => {
     res.send({
       "ScanInProgress": 0,
-      "ScanPossible": 0,
+      "ScanPossible": 1,
       "Source": "Cable",
       "SourceList": [
         "Cable"
@@ -66,24 +66,24 @@ const Main = async (): Promise<void> => {
       const stream = streamersStreamInformation.find((streamInfo) => streamInfo.user_login === streamer.twitchName);
       const id = streamer.twitchName;
       root.ele("channel", { id })
-      .ele("display-name", { lang: "en", }).txt(streamer.friendlyName).up()
-      .ele("icon", { src: info.profile_image_url }).up()
-      .up();
+        .ele("display-name", { lang: "en", }).txt(streamer.friendlyName).up()
+        .ele("icon", { src: info.profile_image_url }).up()
+        .up();
 
       const streamStartDate = stream ? moment(stream.started_at) : moment().subtract(1, "hour");
       let streamEndDate = moment(streamStartDate).add(12, "hours");
-      if(streamEndDate.isBefore(moment())) {
+      if (streamEndDate.isBefore(moment())) {
         streamEndDate = moment().add(12, "hours");
       }
       const format = "YYYYMMDDHHmmss +0100";
       const streamTitle = stream ? stream.title : `${streamer.friendlyName} is offline.`;
       const category = stream ? stream.game_name : "Offline";
       root.ele("programme", { channel: id, start: streamStartDate.format(format), stop: streamEndDate.format(format) })
-      .ele("title", { lang: "en" }).txt(streamTitle).up()
-      .ele("desc", { lang: "en" }).txt(info.description).up()
-      .ele("date").txt(moment().format("YYYYMMDD")).up()
-      .ele("category", { lang: "en" }).txt(category).up()
-      .up()
+        .ele("title", { lang: "en" }).txt(streamTitle).up()
+        .ele("desc", { lang: "en" }).txt(info.description).up()
+        .ele("date").txt(moment().format("YYYYMMDD")).up()
+        .ele("category", { lang: "en" }).txt(category).up()
+        .up()
     });
     const xml = root.end({ prettyPrint: true });
     res.set('Content-Type', 'text/xml');
